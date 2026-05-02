@@ -2,6 +2,7 @@
 import tempfile
 import subprocess
 import json
+import threading
 from datetime import datetime
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
@@ -33,7 +34,6 @@ class WebhookHandler(BaseHTTPRequestHandler):
             
             event_type = self.headers.get('X-GitHub-Event', 'unknown')
             if event_type == 'push':
-                import threading
                 threading.Thread(target=self._handle_push_event, args=(payload,)).start()
             elif event_type == 'ping':
                 print("\nПолучен тестовый PING от GitHub! Связь установлена.")
@@ -43,30 +43,18 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
     def _handle_push_event(self, payload):
         branch = payload.get('ref', '').replace('refs/heads/', '')
-        clone_url = payload.get('repository', {}).get('clone_url', 'unknown')
+        commit_sha = payload.get('after', 'unknown')
 
-        if branch != TARGET_BRANCH:
-            print(f"\nИгнорируем пуш в ветку {branch}. Ждем {TARGET_BRANCH}.")
+        if not branch:
             return
 
-        print(f"\nЗАПУСКАЕМ АВТОМАТИЗАЦИЮ:")
-        
-        with tempfile.TemporaryDirectory() as tmpdir:
-            print(f"\nСкачиваем код во временную папку...")
-            subprocess.run(["git", "clone", clone_url, tmpdir], check=True)
-            subprocess.run(["git", "checkout", branch], cwd=tmpdir, check=True)
-
-            print(f"   \n- Запуск тестов...")
-            try:
-                result = subprocess.run(["./test.sh"], cwd=tmpdir, check=True, capture_output=True, text=True)
-                print(f"   \n✅ Тесты пройдены! :D")
-                
-                print(f"   \n- Запуск деплоя на сервере...")
-                subprocess.run(["./deploy.sh"], cwd=PROJECT_DIR, check=True)
-            except subprocess.CalledProcessError as e:
-                print(f"   \n❌ ОШИБКА! Автоматизация прервана.")
-                print(f"\nВывод: {e.stdout}\nОшибки: {e.stderr}")
-
+        print(f"\nЗАПУСК АВТОМАТИЗАЦИИ Хэш: {commit_sha})", flush=True)
+        try:
+            subprocess.run(["./deploy.sh", branch, commit_sha], cwd=PROJECT_DIR, check=True)
+            print("✅ Деплой успешно завершен!", flush=True)
+        except subprocess.CalledProcessError as e:
+            print("ОШИБКА!", flush=True)
+            
 if __name__ == '__main__':
     print(f"Webhook Server запущен на порту {PORT}")
     print(f"Webhook URL: http://webhook.gusakova.course.prafdin.ru")
