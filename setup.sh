@@ -2,7 +2,7 @@
 set -e
 
 PROJECT_DIR="/home/pass1234/Desktop/DevOps/catty-reminders-app"
-CURRENT_USER="$(whoami)"
+CURRENT_USER="pass1234"
 
 PROXY="course.prafdin.ru"
 TOKEN="devops"
@@ -67,8 +67,8 @@ After=network.target
 [Service]
 User=$CURRENT_USER
 WorkingDirectory=$PROJECT_DIR
-EnvironmentFile=/$PROJECT_DIR/.env
-ExecStart=$PROJECT_DIR/.venv/bin/python -m uvicorn main:app --host 0.0.0.0 --port 8181
+EnvironmentFile=$PROJECT_DIR/.env
+ExecStart=$PROJECT_DIR/.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8181
 Restart=always
 
 [Install]

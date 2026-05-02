@@ -7,6 +7,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 PORT = 8080
 TARGET_BRANCH = "lab1"
+PROJECT_DIR = "/home/pass1234/Desktop/DevOps/catty-reminders-app"
 
 class WebhookHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -61,7 +62,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
                 print(f"   \n✅ Тесты пройдены! :D")
                 
                 print(f"   \n- Запуск деплоя на сервере...")
-                subprocess.run(["./deploy.sh"], cwd=tmpdir, check=True)
+                subprocess.run(["./deploy.sh"], cwd=PROJECT_DIR, check=True)
             except subprocess.CalledProcessError as e:
                 print(f"   \n❌ ОШИБКА! Автоматизация прервана.")
                 print(f"\nВывод: {e.stdout}\nОшибки: {e.stderr}")
