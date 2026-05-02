@@ -22,16 +22,20 @@ class WebhookHandler(BaseHTTPRequestHandler):
 
         try:
             payload = json.loads(body.decode('utf-8'))
+            response_body = b'{"status": "success"}'
+            
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
+            self.send_header('Content-Length', str(len(response_body)))
             self.end_headers()
-            self.wfile.write(b'{"status": "success"}')
+            self.wfile.write(response_body)
             
             event_type = self.headers.get('X-GitHub-Event', 'unknown')
             if event_type == 'push':
-                self._handle_push_event(payload)
+                import threading
+                threading.Thread(target=self._handle_push_event, args=(payload,)).start()
             elif event_type == 'ping':
-                print("\nПолучен тестовый PING от GitHub. Связь установлена.")
+                print("\nПолучен тестовый PING от GitHub! Связь установлена.")
         except json.JSONDecodeError:
             self.send_response(400)
             self.end_headers()
