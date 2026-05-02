@@ -1,0 +1,16 @@
+#!/bin/bash
+# Завершаем работу при любой ошибке
+set -e
+
+echo "Создаем изолированное окружение для тестов..."
+python3 -m venv .temp_venv
+source .temp_venv/bin/activate
+
+echo "Устанавливаем зависимости..."
+pip install -r requirements.txt
+
+echo "Запускаем pytest..."
+# Запускаем тесты
+python3 -m pytest tests/
+
+echo "Все тесты успешно пройдены!"
