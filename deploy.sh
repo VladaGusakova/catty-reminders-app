@@ -12,7 +12,7 @@ git reset --hard origin/lab1
 
 echo "Записываем хэш коммита в .env"
 COMMIT_SHA=$(git rev-parse HEAD)
-echo "DEPLOY_COMMIT=$COMMIT_SHA" > .env
+echo "DEPLOY_REF=$COMMIT_SHA" > "$TARGET_DIR/.env"
 
 echo "Обновляем зависимости..."
 source .venv/bin/activate
