@@ -54,7 +54,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
             print(f"   \n- Запуск тестов...")
             try:
                 result = subprocess.run(["./test.sh"], cwd=tmpdir, check=True, capture_output=True, text=True)
-                print(f"   \n✅ Тесты пройдены!")
+                print(f"   \n✅ Тесты пройдены! :D")
                 
                 print(f"   \n- Запуск деплоя на сервере...")
                 subprocess.run(["./deploy.sh"], cwd=tmpdir, check=True)
