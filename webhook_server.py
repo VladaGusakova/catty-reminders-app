@@ -13,7 +13,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
-        html = "<html><body><h1>Webhook сервер работает! Жду POST запросов от GitHub...</h1></body></html>"
+        html = "<html><body><h1>Webhook сервер работает. Жду POST запросов от GitHub...</h1></body></html>"
         self.wfile.write(html.encode('utf-8'))
 
     def do_POST(self):
@@ -31,7 +31,7 @@ class WebhookHandler(BaseHTTPRequestHandler):
             if event_type == 'push':
                 self._handle_push_event(payload)
             elif event_type == 'ping':
-                print("Получен тестовый PING от GitHub! Связь установлена.")
+                print("\nПолучен тестовый PING от GitHub. Связь установлена.")
         except json.JSONDecodeError:
             self.send_response(400)
             self.end_headers()
@@ -41,30 +41,30 @@ class WebhookHandler(BaseHTTPRequestHandler):
         clone_url = payload.get('repository', {}).get('clone_url', 'unknown')
 
         if branch != TARGET_BRANCH:
-            print(f"Игнорируем пуш в ветку {branch}. Ждем {TARGET_BRANCH}.")
+            print(f"\nИгнорируем пуш в ветку {branch}. Ждем {TARGET_BRANCH}.")
             return
 
-        print(f"\nПУШ В ВЕТКУ {branch}! ЗАПУСКАЕМ АВТОМАТИЗАЦИЮ:")
+        print(f"\nЗАПУСКАЕМ АВТОМАТИЗАЦИЮ:")
         
         with tempfile.TemporaryDirectory() as tmpdir:
-            print(f"   Скачиваем код во временную папку...")
+            print(f"\nСкачиваем код во временную папку...")
             subprocess.run(["git", "clone", clone_url, tmpdir], check=True)
             subprocess.run(["git", "checkout", branch], cwd=tmpdir, check=True)
 
-            print(f"   - Запуск тестов (test.sh)...")
+            print(f"   \n- Запуск тестов...")
             try:
                 result = subprocess.run(["./test.sh"], cwd=tmpdir, check=True, capture_output=True, text=True)
-                print(f"   ✅ Тесты пройдены!")
+                print(f"   \n✅ Тесты пройдены!")
                 
-                print(f"   - Запуск деплоя на сервере (deploy.sh)...")
+                print(f"   \n- Запуск деплоя на сервере...")
                 subprocess.run(["./deploy.sh"], cwd=tmpdir, check=True)
             except subprocess.CalledProcessError as e:
-                print(f"   ❌ ОШИБКА! Автоматизация прервана.")
-                print(f"Вывод: {e.stdout}\nОшибки: {e.stderr}")
+                print(f"   \n❌ ОШИБКА! Автоматизация прервана.")
+                print(f"\nВывод: {e.stdout}\nОшибки: {e.stderr}")
 
 if __name__ == '__main__':
     print(f"Webhook Server запущен на порту {PORT}")
-    print(f"👉 Адрес для настроек GitHub: http://webhook.gusakova.course.prafdin.ru")
-    print(f"👉 Адрес вашего приложения:   http://app.gusakova.course.prafdin.ru")
+    print(f"Webhook URL: http://webhook.gusakova.course.prafdin.ru")
+    print(f"URL:   http://app.gusakova.course.prafdin.ru")
     print("Ожидаю событий от GitHub...\n")
     HTTPServer(('0.0.0.0', PORT), WebhookHandler).serve_forever()
