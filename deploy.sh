@@ -2,7 +2,7 @@
 set -e
 
 TARGET_DIR="/home/pass1234/Desktop/DevOps/catty-reminders-app"
-COMMIT_SHA=$1
+COMMIT_SHA=$2
 
 if [ -z "$COMMIT_SHA" ] || [ "$COMMIT_SHA" == "unknown" ]; then
     echo "Ошибка: COMMIT_SHA не передан!"
