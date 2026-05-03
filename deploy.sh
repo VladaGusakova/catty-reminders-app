@@ -2,29 +2,18 @@
 set -e
 
 TARGET_DIR="/home/pass1234/Desktop/DevOps/catty-reminders-app"
-
-BRANCH=${1:-lab2}
-COMMIT_SHA=$2
+IMAGE_NAME="ghcr.io/vladagusakova/catty-reminders-app:latest"
 
 echo "Переходим в директорию $TARGET_DIR..."
 cd "$TARGET_DIR"
 
-echo "Стягиваем последние изменения..."
-git fetch origin "$BRANCH"
-git checkout "$BRANCH"
-git reset --hard "origin/$BRANCH"
+echo "Скачиваем новый Docker-образ..."
+docker pull $IMAGE_NAME
 
-echo "Записываем хэш коммита в .env..."
-if [ -z "$COMMIT_SHA" ] || [ "$COMMIT_SHA" == "unknown" ]; then
-    COMMIT_SHA=$(git rev-parse HEAD)
-fi
-echo "DEPLOY_REF=$COMMIT_SHA" > "$TARGET_DIR/.env"
+echo "Останавливаем и удаляем старый контейнер..."
+docker rm -f catty-app-container || true
 
-echo "Обновляем зависимости..."
-source .venv/bin/activate
-pip install -r requirements.txt
-
-echo "Перезапускаем системную службу uvicorn..."
-sudo systemctl restart catty-app
+echo "Запускаем новый контейнер..."
+docker run -d -p 8181:8181 --name catty-app-container --restart always $IMAGE_NAME
 
 echo "Развертывание завершено успешно!"
