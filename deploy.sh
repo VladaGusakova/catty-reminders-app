@@ -9,7 +9,8 @@ COMMIT_SHA=$2
 echo "Переходим в директорию $TARGET_DIR..."
 cd "$TARGET_DIR"
 
-if[ -n "$COMMIT_SHA" ] && [ "$COMMIT_SHA" != "unknown" ]; then
+touch .env
+if [ -n "$COMMIT_SHA" ] && [ "$COMMIT_SHA" != "unknown" ]; then
     echo "DEPLOY_REF=$COMMIT_SHA" > .env
 fi
 
