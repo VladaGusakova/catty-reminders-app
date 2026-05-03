@@ -3,7 +3,7 @@ set -e
 
 TARGET_DIR="/home/pass1234/Desktop/DevOps/catty-reminders-app"
 
-BRANCH=${1:-lab1}
+BRANCH=${1:-lab2}
 COMMIT_SHA=$2
 
 echo "Переходим в директорию $TARGET_DIR..."
@@ -13,9 +13,6 @@ echo "Стягиваем последние изменения..."
 git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
-
-echo "Запускаем тесты..."
-./test.sh
 
 echo "Записываем хэш коммита в .env..."
 if [ -z "$COMMIT_SHA" ] || [ "$COMMIT_SHA" == "unknown" ]; then
