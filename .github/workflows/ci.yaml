@@ -27,7 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install uvicorn pytest httpx pytest-playwright
+          pip install uvicorn pytest pytest-playwright
           playwright install chromium
 
       - name: Create mock .env file
