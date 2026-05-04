@@ -30,7 +30,7 @@ jobs:
           CONTAINER_NAME="catty-app-container"
 
           echo "Авторизация в GitHub Container Registry..."
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
           echo "Скачиваем образ $IMAGE_NAME..."
           docker pull $IMAGE_NAME
