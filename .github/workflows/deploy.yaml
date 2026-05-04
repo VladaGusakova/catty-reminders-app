@@ -36,8 +36,8 @@ jobs:
           docker pull $IMAGE_NAME
 
           echo "Останавливаем старый контейнер..."
-          docker stop $CONTAINER_NAME  true
-          docker rm -f $CONTAINER_NAME  true
+          docker stop $CONTAINER_NAME || true
+          docker rm -f $CONTAINER_NAME || true
 
           echo "Запускаем новый контейнер..."
           docker run -d \
