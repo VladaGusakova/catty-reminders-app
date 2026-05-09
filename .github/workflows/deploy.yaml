@@ -25,6 +25,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
         script: |
           IMAGE_NAME="ghcr.io/${{ steps.prep.outputs.repo_lower }}:${{ github.sha }}"
           CONTAINER_NAME="catty-app-container"
@@ -44,7 +45,6 @@ jobs:
             --name $CONTAINER_NAME \
             -p 8181:8181 \
             --restart always \
-            -e DEPLOY_REF=${{ github.sha }} \
             $IMAGE_NAME
 
           echo "Очищаем старые неиспользуемые образы Docker..."
