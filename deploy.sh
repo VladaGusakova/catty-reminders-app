@@ -14,9 +14,6 @@ git fetch origin "$BRANCH"
 git checkout "$BRANCH"
 git reset --hard "origin/$BRANCH"
 
-echo "Запускаем тесты..."
-./test.sh
-
 echo "Записываем хэш коммита в .env..."
 if [ -z "$COMMIT_SHA" ] || [ "$COMMIT_SHA" == "unknown" ]; then
     COMMIT_SHA=$(git rev-parse HEAD)
@@ -29,5 +26,10 @@ pip install -r requirements.txt
 
 echo "Перезапускаем системную службу uvicorn..."
 sudo systemctl restart catty-app
+
+sleep 5
+
+echo "Запускаем тесты..."
+./test.sh
 
 echo "Развертывание завершено успешно!"
