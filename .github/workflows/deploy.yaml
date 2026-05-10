@@ -38,11 +38,14 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           export DEPLOY_REF="${{ github.sha }}"
-          
           echo "${{ secrets.GH_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
           cd /home/${{ secrets.SSH_USER }}/catty-app
           
+          docker compose down -v || true
+          docker rm -f catty-app-container || true
+          
           docker compose pull
           docker compose up -d
+          
           docker image prune -af || true

@@ -8,11 +8,11 @@ services:
       - db
 
   db:
-    image: mysql:8.0
+    image: mariadb:10.11
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: mypass
-      MYSQL_DATABASE: catty_reminders
+      MARIADB_ROOT_PASSWORD: mypass
+      MARIADB_DATABASE: catty_reminders
     volumes:
       - db_data:/var/lib/mysql
 
