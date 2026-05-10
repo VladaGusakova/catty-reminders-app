@@ -42,7 +42,7 @@ jobs:
           
           cd /home/${{ secrets.SSH_USER }}/catty-app
           
-          docker compose down -v || true
+          docker compose down || true
           docker rm -f catty-app-container || true
           
           docker compose pull
