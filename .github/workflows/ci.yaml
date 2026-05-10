@@ -51,7 +51,6 @@ jobs:
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)
           nohup uvicorn app.main:app --host 127.0.0.1 --port 8181 &
-          # Даем приложению и базе время запуститься
           sleep 10 
 
       - name: Run ALL tests
@@ -65,9 +64,10 @@ jobs:
         with:
           name: test_result
           path: test_result.xml
-
+          
       - name: Restore config for Docker build
-        run: git checkout config.json
+        run: |
+          sed -i 's/"host": "127.0.0.1"/"host": "db"/g' config.json
 
       - name: Convert repository name to lowercase
         id: prep
