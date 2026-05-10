@@ -44,8 +44,9 @@ jobs:
           playwright install chromium --with-deps
 
       - name: Patch config for CI testing
-        run: sed -i 's/"host": "db"/"host": "127.0.0.1"/g' config.json
-
+        run: |
+          sed -i 's/"host": "db"/"host": "127.0.0.1"/g' config.json
+          
       - name: Start application for tests
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)
